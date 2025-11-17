@@ -1,4 +1,3 @@
-
 import 'package:depi_project/features/auth/presentation/view/login_view.dart';
 import 'package:go_router/go_router.dart';
 

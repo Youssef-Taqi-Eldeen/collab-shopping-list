@@ -1,42 +1,70 @@
 import 'package:depi_project/core/utils/size_config.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'app_colors.dart';
 
 abstract class Styles {
-  static TextStyle styleBold30AppbarText(BuildContext context) {
+
+  // Appbar Title
+  static TextStyle appBarTitle(BuildContext context) {
     return TextStyle(
-        fontSize: getResponsiveText(context, fontSize: 16),
-        color: Color(0xFFFFFFFF),
-        letterSpacing: 3.0,
-        fontWeight: FontWeight.bold
+      fontSize: getResponsiveText(context, fontSize: 18),
+      color: AppColors.textDark,
+      fontWeight: FontWeight.bold,
+      letterSpacing: 1.2,
     );
   }
 
-  static TextStyle styleSemiBold48(BuildContext context) {
+  // Large Bold Title
+  static TextStyle bold26(BuildContext context) {
     return TextStyle(
-      color: Colors.black,
-      fontSize: getResponsiveText(context, fontSize: 48),
+      color: AppColors.textDark,
+      fontSize: getResponsiveText(context, fontSize: 26),
+      fontWeight: FontWeight.w700,
+    );
+  }
+
+  // Medium Bold Title
+  static TextStyle bold20(BuildContext context) {
+    return TextStyle(
+      color: AppColors.textDark,
+      fontSize: getResponsiveText(context, fontSize: 20),
       fontWeight: FontWeight.w600,
     );
   }
 
-
-}
-
-double getResponsiveText(BuildContext context, {required double fontSize}) {
-  double responsiveText = getScaleFactor(context) * fontSize;
-  return responsiveText.clamp(fontSize * .8, fontSize * 1.2);
-}
-
-double getScaleFactor(BuildContext context) {
-  double width = MediaQuery.sizeOf(context).width;
-  if (width <= SizeConfig.mobileWidth) {
-    return width / 400;
-  } else if (width <= SizeConfig.tabletWidth) {
-    return width / 800;
-  } else {
-    return width / 1200;
+  // Body Text Large
+  static TextStyle body16(BuildContext context) {
+    return TextStyle(
+      color: AppColors.textDark,
+      fontSize: getResponsiveText(context, fontSize: 16),
+      fontWeight: FontWeight.w500,
+    );
   }
+
+  // Normal Paragraph
+  static TextStyle body14(BuildContext context) {
+    return TextStyle(
+      color: AppColors.textDark,
+      fontSize: getResponsiveText(context, fontSize: 14),
+      fontWeight: FontWeight.w400,
+    );
+  }
+
+  // Grey small text
+  static TextStyle body12Grey(BuildContext context) {
+    return TextStyle(
+      color: AppColors.textLight,
+      fontSize: getResponsiveText(context, fontSize: 12),
+    );
+  }
+
+  //Button Text
+  static TextStyle button16(BuildContext context) {
+    return TextStyle(
+      color: Colors.white,
+      fontSize: getResponsiveText(context, fontSize: 16),
+      fontWeight: FontWeight.w600,
+    );
+  }
+
 }

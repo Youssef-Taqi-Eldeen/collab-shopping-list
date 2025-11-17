@@ -11,12 +11,12 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryColor,
+      backgroundColor: AppColors_old.primaryColor,
       appBar: AppBar(
         title: Text(
-          "Shopping List", style: Styles.styleBold30AppbarText(context)),
+          "Shopping List", style: Styles.bold26(context)),
         centerTitle: true,
-        backgroundColor: AppColors.appbarColor,
+        backgroundColor: AppColors_old.appbarColor,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -26,7 +26,7 @@ class LoginView extends StatelessWidget {
           children: [
             Text(
               "Login",
-              style: Styles.styleSemiBold48(context)),
+              style: Styles.bold20(context)),
             SizedBox(
               height: 60,
             ),
@@ -49,7 +49,7 @@ class LoginView extends StatelessWidget {
                   CustomTextButton(
                       onPressed: (){},
                       text: "register now",
-                      textColor: AppColors.appbarColor,
+                      textColor: AppColors_old.appbarColor,
                   ),
                 ],
               ),
@@ -61,7 +61,7 @@ class LoginView extends StatelessWidget {
                 children: [
                   Container(
                     height: 1,
-                    color: AppColors.blackColor,
+                    color: AppColors_old.blackColor,
                     width: 60,
                   ),
                   Padding(
@@ -69,12 +69,12 @@ class LoginView extends StatelessWidget {
                     child: Text(
                       "OR",
                       style: TextStyle(
-                      color: AppColors.blackColor,
+                      color: AppColors_old.blackColor,
                     ),),
                   ),
                   Container(
                     height: 1,
-                    color: AppColors.blackColor,
+                    color: AppColors_old.blackColor,
                     width: 60,
                   )
                 ],
