@@ -1,17 +1,11 @@
-
 import 'package:depi_project/features/auth/presentation/view/login_view.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../features/navigation/mainLayout.dart';
 
 abstract class AppRouter {
   static const String kAuthView = '/';
   // static const String kAuthView = '/AuthView';
-  static const String kHomeView = '/home';
-
 
   static GoRouter router = GoRouter(
-   // initialLocation: '/home',
     routes: [
       // GoRoute(
       //   name: kSplashView,
@@ -25,12 +19,6 @@ abstract class AppRouter {
           return const LoginView();
         },
       ),
-      GoRoute(
-        name: kHomeView,
-        path: kHomeView,
-        builder: (context, state) => const MainLayout(),
-      ),
-
 
     ],
   );
