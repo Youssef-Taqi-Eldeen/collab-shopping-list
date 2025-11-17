@@ -9,6 +9,7 @@ import '../../../../core/utils/size_config.dart';
 import '../../cubit/home_cubit.dart';
 import '../../model/category_model.dart';
 import '../../model/product_model.dart';
+import 'details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -246,54 +247,66 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // ---------- REAL PRODUCT CARD ----------
   Widget _productCard(BuildContext context, Product product) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(
-          getResponsiveRadius(context, radius: 14),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DetailsScreen(product: product),
+          ),
+        );
+
+      },
+
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(
+            getResponsiveRadius(context, radius: 14),
+          ),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 6,
+              offset: Offset(0, 2),
+            )
+          ],
         ),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 6,
-            offset: Offset(0, 2),
-          )
-        ],
-      ),
-      padding: EdgeInsets.all(getResponsiveSize(context, size: 10)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // IMAGE
-          Expanded(
-            child: Center(
-              child: Image.network(
-                product.thumbnail,
-                fit: BoxFit.contain,
+        padding: EdgeInsets.all(getResponsiveSize(context, size: 10)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // IMAGE
+            Expanded(
+              child: Center(
+                child: Image.network(
+                  product.thumbnail,
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
-          ),
-
-          SizedBox(height: getResponsiveSize(context, size: 8)),
-
-          // TITLE
-          Text(
-            product.title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: Styles.body14(context),
-          ),
-
-          SizedBox(height: getResponsiveSize(context, size: 4)),
-
-          // PRICE
-          Text(
-            "\$${product.price}",
-            style: Styles.bold20(context).copyWith(
-              fontSize: getResponsiveText(context, fontSize: 16),
+      
+            SizedBox(height: getResponsiveSize(context, size: 8)),
+      
+            // TITLE
+            Text(
+              product.title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: Styles.body14(context),
             ),
-          ),
-        ],
+      
+            SizedBox(height: getResponsiveSize(context, size: 4)),
+      
+            // PRICE
+            Text(
+              "\$${product.price}",
+              style: Styles.bold20(context).copyWith(
+                fontSize: getResponsiveText(context, fontSize: 16),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
