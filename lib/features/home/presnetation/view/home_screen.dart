@@ -127,37 +127,77 @@ class _HomeScreenState extends State<HomeScreen> {
       height: getResponsiveSize(context, size: 40),
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
+        itemCount: categories.length+1,
         separatorBuilder: (_, __) => const SizedBox(width: 12),
-        itemBuilder: (context, i) {
-          final Category cat = categories[i];
-          final bool isSelected =
-              context.read<HomeCubit>().selectedCategory == cat.slug;
-          return GestureDetector(
-            onTap: () => context.read<HomeCubit>().filterByCategory(cat.slug),
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: getResponsiveSize(context, size: 16),
-                vertical: getResponsiveSize(context, size: 10),
-              ),
-              decoration: BoxDecoration(
-                color: isSelected ? AppColors.primary : AppColors.white,
-                borderRadius:
-                BorderRadius.circular(getResponsiveRadius(context, radius: 12)),
-                border: Border.all(
-                  color: isSelected ? AppColors.primary : AppColors.border,
-                ),
-              ),
-            child: Center(
-                child: Text(
-                  cat.name,
-                  style: Styles.body14(context),
+          itemBuilder: (context, i) {
+            // FIRST ITEM = ALL
+            if (i == 0) {
+              final bool isSelected =
+                  context.read<HomeCubit>().selectedCategory == "all";
 
+              return GestureDetector(
+                onTap: () {
+                  context.read<HomeCubit>().selectedCategory = "all";
+                  context.read<HomeCubit>().loadHome();
+                  setState(() {});
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: getResponsiveSize(context, size: 16),
+                    vertical: getResponsiveSize(context, size: 10),
+                  ),
+                  decoration: BoxDecoration(
+                    color: isSelected ? AppColors.primary : AppColors.white,
+                    borderRadius:
+                    BorderRadius.circular(getResponsiveRadius(context, radius: 12)),
+                    border: Border.all(
+                      color: isSelected ? AppColors.primary : AppColors.border,
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "All",
+                      style: Styles.body14(context).copyWith(
+                        color: isSelected ? Colors.white : AppColors.textDark,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }
+
+            // REAL CATEGORIES
+            final Category cat = categories[i - 1];
+            final bool isSelected =
+                context.read<HomeCubit>().selectedCategory == cat.slug;
+
+            return GestureDetector(
+              onTap: () => context.read<HomeCubit>().filterByCategory(cat.slug),
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: getResponsiveSize(context, size: 16),
+                  vertical: getResponsiveSize(context, size: 10),
+                ),
+                decoration: BoxDecoration(
+                  color: isSelected ? AppColors.primary : AppColors.white,
+                  borderRadius:
+                  BorderRadius.circular(getResponsiveRadius(context, radius: 12)),
+                  border: Border.all(
+                    color: isSelected ? AppColors.primary : AppColors.border,
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    cat.name,
+                    style: Styles.body14(context).copyWith(
+                      color: isSelected ? Colors.white : AppColors.textDark,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          }
+
       ),
     );
   }
