@@ -10,6 +10,7 @@ class Product {
   final String category;
   final String thumbnail;
   final List<String> images;
+  int qty;
 
   Product({
     required this.id,
@@ -23,6 +24,7 @@ class Product {
     required this.category,
     required this.thumbnail,
     required this.images,
+    this.qty=1
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
