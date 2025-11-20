@@ -1,4 +1,3 @@
-import 'package:depi_project/features/cart/presentation/view/cart_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
@@ -41,8 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
           maxLines: 2,
         ),
       ),
-
-
       body: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
           if (state is HomeLoading || state is HomeInitial) {
@@ -58,7 +55,6 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Row(
                   children: [
                     Expanded(
@@ -83,13 +79,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             borderSide: const BorderSide(
                                 color: AppColors.primary, width: 1.4),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                          contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 12),
                         ),
                       ),
                     ),
-
                     const SizedBox(width: 12),
-
                     Container(
                       padding: EdgeInsets.all(getResponsiveSize(context, size: 12)),
                       decoration: BoxDecoration(
@@ -101,13 +96,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-
                 SizedBox(height: getResponsiveSize(context, size: 16)),
-
                 _categoriesSection(context, state),
-
                 SizedBox(height: getResponsiveSize(context, size: 16)),
-
                 _productsSection(context, state),
               ],
             ),
@@ -122,19 +113,58 @@ class _HomeScreenState extends State<HomeScreen> {
       return const SizedBox.shrink();
     }
 
-    final categories =
-    state is HomeLoaded ? state.categories : context.read<HomeCubit>().categories;
+    final categories = state is HomeLoaded
+        ? state.categories
+        : context.read<HomeCubit>().categories;
 
     return SizedBox(
       height: getResponsiveSize(context, size: 40),
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
+        itemCount: categories.length + 1,
         separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (context, i) {
-          final Category cat = categories[i];
+          // FIRST ITEM = ALL
+          if (i == 0) {
+            final bool isSelected =
+                context.read<HomeCubit>().selectedCategory == "all";
+
+            return GestureDetector(
+              onTap: () {
+                context.read<HomeCubit>().selectedCategory = "all";
+                context.read<HomeCubit>().loadHome();
+                setState(() {});
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: getResponsiveSize(context, size: 16),
+                  vertical: getResponsiveSize(context, size: 10),
+                ),
+                decoration: BoxDecoration(
+                  color: isSelected ? AppColors.primary : AppColors.white,
+                  borderRadius:
+                  BorderRadius.circular(getResponsiveRadius(context, radius: 12)),
+                  border: Border.all(
+                    color: isSelected ? AppColors.primary : AppColors.border,
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    "All",
+                    style: Styles.body14(context).copyWith(
+                      color: isSelected ? Colors.white : AppColors.textDark,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+
+          // REAL CATEGORIES
+          final Category cat = categories[i - 1];
           final bool isSelected =
               context.read<HomeCubit>().selectedCategory == cat.slug;
+
           return GestureDetector(
             onTap: () => context.read<HomeCubit>().filterByCategory(cat.slug),
             child: Container(
@@ -150,11 +180,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: isSelected ? AppColors.primary : AppColors.border,
                 ),
               ),
-            child: Center(
+              child: Center(
                 child: Text(
                   cat.name,
-                  style: Styles.body14(context),
-
+                  style: Styles.body14(context).copyWith(
+                    color: isSelected ? Colors.white : AppColors.textDark,
+                  ),
                 ),
               ),
             ),
@@ -195,8 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisSpacing: getResponsiveSize(context, size: 12),
             childAspectRatio: 0.67,
           ),
-          itemBuilder: (context, i) =>
-              _productCard(context, state.products[i]),
+          itemBuilder: (context, i) => _productCard(context, state.products[i]),
         ),
       );
     }
@@ -223,9 +253,8 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(
-                    getResponsiveRadius(context, radius: 12),
-                  ),
+                  borderRadius:
+                  BorderRadius.circular(getResponsiveRadius(context, radius: 12)),
                 ),
               ),
             ),
@@ -256,15 +285,12 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (context) => DetailsScreen(product: product),
           ),
         );
-
       },
-
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.white,
-          borderRadius: BorderRadius.circular(
-            getResponsiveRadius(context, radius: 14),
-          ),
+          borderRadius:
+          BorderRadius.circular(getResponsiveRadius(context, radius: 14)),
           boxShadow: const [
             BoxShadow(
               color: Colors.black12,
@@ -286,9 +312,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-      
             SizedBox(height: getResponsiveSize(context, size: 8)),
-      
             // TITLE
             Text(
               product.title,
@@ -296,9 +320,7 @@ class _HomeScreenState extends State<HomeScreen> {
               overflow: TextOverflow.ellipsis,
               style: Styles.body14(context),
             ),
-      
             SizedBox(height: getResponsiveSize(context, size: 4)),
-      
             // PRICE
             Text(
               "\$${product.price}",

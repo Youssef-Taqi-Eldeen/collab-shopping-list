@@ -1,7 +1,10 @@
+import 'package:depi_project/features/cart/presentation/view/users_screen.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_styles.dart';
+import 'add_user_screen.dart';
 import 'cart_items.dart';
+
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -11,6 +14,7 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+
   void removeFromCart(int index) {
     setState(() {
       cartItems.removeAt(index);
@@ -49,7 +53,28 @@ class _CartScreenState extends State<CartScreen> {
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.person_add),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => AddUserScreen()),
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.people),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => UsersScreen()),
+              );
+            },
+          ),
+        ],
       ),
+
       body: Column(
         children: [
           Expanded(
