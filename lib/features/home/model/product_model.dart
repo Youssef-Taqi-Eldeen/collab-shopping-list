@@ -58,4 +58,34 @@ class Product {
       "images": images,
     };
   }
+  Product copyWith({
+    int? id,
+    String? title,
+    String? description,
+    num? price,
+    num? discountPercentage,
+    num? rating,
+    int? stock,
+    String? brand,
+    String? category,
+    String? thumbnail,
+    List<String>? images,
+    int? qty,
+  }) {
+    return Product(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      price: price ?? this.price,
+      discountPercentage: discountPercentage ?? this.discountPercentage,
+      rating: rating ?? this.rating,
+      stock: stock ?? this.stock,
+      brand: brand ?? this.brand,
+      category: category ?? this.category,
+      thumbnail: thumbnail ?? this.thumbnail,
+      images: images ?? this.images,
+      qty: qty ?? this.qty,
+    );
+  }
+
 }

@@ -1,7 +1,6 @@
 import 'package:depi_project/features/navigation/widgets/carved_button_nav_bar.dart';
 import 'package:flutter/material.dart';
-
-import '../cart/presentation/view/cart_screen.dart';
+import '../cart/presentation/view/carts_list_screen.dart';
 import '../home/presnetation/view/home_screen.dart';
 import '../profile/presentation/view/profile_screen.dart';
 
@@ -18,7 +17,7 @@ class _MainLayoutState extends State<MainLayout> {
 
   final screens = const [
     HomeScreen(),
-    CartScreen(),
+    CartsListScreen(),
     ProfileScreen(),
   ];
 

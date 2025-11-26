@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_styles.dart';
-import '../../../cart/presentation/view/cart_items.dart';
+import '../../../cart/presentation/view/carts_list_screen.dart';
 import '../../model/product_model.dart';
-import '../../../cart/presentation/view/cart_screen.dart';
+import '../widgets/chooseCartSheet.dart';
 
 class DetailsScreen extends StatefulWidget {
   final Product product;
@@ -16,27 +16,8 @@ class DetailsScreen extends StatefulWidget {
 class _DetailsScreenState extends State<DetailsScreen> {
   int rating = 0;
   int qty = 1;
-  int selectedSize = 1;
+  int selectedSize = 0;
   bool isFavorite = false;
-
-  void addToCart(Product product) {
-    final existingIndex = cartItems.indexWhere((p) => p.id == product.id);
-
-    if (existingIndex != -1) {
-      cartItems[existingIndex].qty = (cartItems[existingIndex].qty ?? 1) + qty;
-    } else {
-      product.qty = qty;
-      cartItems.add(product);
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Product Added to Cart"),
-        duration: const Duration(seconds: 1),
-        backgroundColor: AppColors.primary,
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +40,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => const CartScreen(),
+                    builder: (_) => const CartsListScreen(),
                   ),
                 );
               },
@@ -72,112 +53,123 @@ class _DetailsScreenState extends State<DetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: double.infinity,
                 height: 320,
-                decoration: BoxDecoration(
-                  color: AppColors.background,
-                  borderRadius: const BorderRadius.vertical(bottom: Radius.circular(28)),
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.vertical(bottom: Radius.circular(28)),
                 ),
                 child: Center(
                   child: Image.network(widget.product.thumbnail, fit: BoxFit.contain),
                 ),
               ),
+
               const SizedBox(height: 20),
+
               Row(
                 children: [
                   Row(
-                    children: List.generate(5, (index) {
-                      bool isSelected = index < rating;
+                    children: List.generate(5, (i) {
+                      final active = i < rating;
                       return GestureDetector(
-                        onTap: () { setState(() { rating = index + 1; }); },
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 150),
-                          curve: Curves.easeOut,
-                          padding: const EdgeInsets.all(2),
-                          child: Icon(Icons.star, size: 24, color: isSelected ? AppColors.primary : Colors.grey.withOpacity(0.3)),
+                        onTap: () => setState(() => rating = i + 1),
+                        child: Icon(
+                          Icons.star,
+                          size: 24,
+                          color: active ? AppColors.primary : Colors.grey.withOpacity(0.3),
                         ),
                       );
                     }),
                   ),
                   const SizedBox(width: 10),
-                  Text("(${rating.toStringAsFixed(1)})", style: const TextStyle(fontSize: 16, color: Colors.grey)),
+                  Text("(${rating.toStringAsFixed(1)})"),
                   const Spacer(),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: Colors.grey.shade400, width: 1),
+                      border: Border.all(color: Colors.grey.shade400),
                     ),
                     child: Row(
                       children: [
                         GestureDetector(
-                          onTap: () { if (qty >= 1) setState(() { qty--; }); },
-                          child: Icon(Icons.remove, size: 20, color: AppColors.primary),
+                          onTap: () => setState(() => qty = qty > 1 ? qty - 1 : 1),
+                          child: const Icon(Icons.remove),
                         ),
                         const SizedBox(width: 12),
-                        Text("$qty", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        Text("$qty"),
                         const SizedBox(width: 12),
                         GestureDetector(
-                          onTap: () { setState(() { qty++; }); },
-                          child: Icon(Icons.add, size: 20, color: AppColors.primary),
+                          onTap: () => setState(() => qty++),
+                          child: const Icon(Icons.add),
                         ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
+
               const SizedBox(height: 16),
-              Text(widget.product.title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+
+              Text(widget.product.title,
+                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+
               const SizedBox(height: 8),
-              Text("\$${widget.product.price * (widget.product.qty ?? qty)}", style: const TextStyle(fontSize: 22, color: Colors.black, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 16),
-              const Divider(color: Colors.grey, thickness: .3),
-              const SizedBox(height: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text("Descriptions", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  Text(widget.product.description, style: const TextStyle(fontSize: 16)),
-                ],
+
+              Text(
+                "\$${widget.product.price * qty}",
+                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
+
               const SizedBox(height: 16),
-              const Divider(color: Colors.grey, thickness: .3),
-              const SizedBox(height: 16),
-              const Text("Select Size", style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18)),
-              const SizedBox(height: 10),
+              const Divider(),
+
+              const Text("Descriptions", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(widget.product.description),
+
+              const SizedBox(height: 20),
+              const Divider(),
+
+              const Text("Select Size", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: List.generate(4, (i) {
-                  List sizes = ["S", "M", "L", "XL"];
-                  bool isSelected = selectedSize == i;
+                  final labels = ["S", "M", "L", "XL"];
+                  final active = selectedSize == i;
                   return Padding(
                     padding: EdgeInsets.only(right: i == 3 ? 0 : 10),
                     child: GestureDetector(
-                      onTap: () { setState(() => selectedSize = i); },
+                      onTap: () => setState(() => selectedSize = i),
                       child: Container(
                         width: 50,
                         height: 50,
                         decoration: BoxDecoration(
-                          color: isSelected ? AppColors.primary : Colors.grey.shade200,
+                          color: active ? AppColors.primary : Colors.grey.shade200,
                           shape: BoxShape.circle,
                         ),
                         alignment: Alignment.center,
                         child: Text(
-                          sizes[i],
-                          style: TextStyle(color: isSelected ? Colors.white : Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                          labels[i],
+                          style: TextStyle(
+                            color: active ? Colors.white : Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
                   );
                 }),
               ),
+
               const SizedBox(height: 40),
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   children: [
                     GestureDetector(
-                      onTap: () { setState(() { isFavorite = !isFavorite; }); },
+                      onTap: () => setState(() => isFavorite = !isFavorite),
                       child: Container(
                         height: 55,
                         width: 55,
@@ -186,27 +178,38 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           border: Border.all(color: Colors.grey.shade300),
                           color: isFavorite ? AppColors.primary : Colors.transparent,
                         ),
-                        child: Icon(isFavorite ? Icons.favorite : Icons.favorite_border,
-                            color: isFavorite ? Colors.white : Colors.grey),
+                        child: Icon(
+                          isFavorite ? Icons.favorite : Icons.favorite_border,
+                          color: isFavorite ? Colors.white : Colors.grey,
+                        ),
                       ),
                     ),
+
                     const SizedBox(width: 15),
+
                     Expanded(
                       child: ElevatedButton.icon(
-                        onPressed: () { addToCart(widget.product); },
+                        onPressed: () {
+                          ChooseCartSheet.show(
+                            parentContext: context,
+                            product: widget.product.copyWith(qty: qty),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(40),
+                          ),
                           padding: const EdgeInsets.symmetric(vertical: 15),
                         ),
-                        icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white, size: 30),
-                        label: const Text("Add to Cart", style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold)),
+                        icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
+                        label: const Text("Add to Cart",
+                            style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold,color: AppColors.white)),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
             ],
           ),
         ),
