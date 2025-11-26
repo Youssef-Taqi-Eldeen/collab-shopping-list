@@ -16,23 +16,37 @@ class MainLayout extends StatefulWidget {
 class _MainLayoutState extends State<MainLayout> {
   int currentIndex = 0;
 
-  final screens = const [
-    HomeScreen(),
-    CartScreen(),
-    ProfileScreen(),
+  List<Widget> get screens => [
+    const HomeScreen(),
+    CartScreen(
+      onHomePressed: () {
+        setState(() => currentIndex = 0);
+      },
+    ),
+    const ProfileScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      body: screens[currentIndex],
+    return WillPopScope(
+      onWillPop: () async {
+        // If not on home tab, go to home tab first
+        if (currentIndex != 0) {
+          setState(() => currentIndex = 0);
+          return false; // Don't exit app
+        }
+        return true; // Exit app if already on home tab
+      },
+      child: Scaffold(
+        extendBody: true,
+        body: screens[currentIndex],
 
-      bottomNavigationBar: CurvedBottomNav(
-        currentIndex: currentIndex,
-        onTap: (index) {
-          setState(() => currentIndex = index);
-        },
+        bottomNavigationBar: CurvedBottomNav(
+          currentIndex: currentIndex,
+          onTap: (index) {
+            setState(() => currentIndex = index);
+          },
+        ),
       ),
     );
   }

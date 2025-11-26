@@ -1,0 +1,28 @@
+{
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "collab-shop-3da38",
+          "appId": "1:662269362178:android:29d2da591862d718c6271b",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "collab-shop-3da38",
+          "configurations": {
+            "android": "1:662269362178:android:29d2da591862d718c6271b",
+            "ios": "1:662269362178:ios:9d25bf4d217a7af0c6271b",
+            "macos": "1:662269362178:ios:9d25bf4d217a7af0c6271b",
+            "web": "1:662269362178:web:4f9e3072cf8d699cc6271b",
+            "windows": "1:662269362178:web:354f924d4b96a421c6271b"
+          }
+        }
+      }
+    }
+  }
+}
