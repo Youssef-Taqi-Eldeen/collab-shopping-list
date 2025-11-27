@@ -66,50 +66,77 @@ class _ChooseCartContent extends StatelessWidget {
     return SizedBox(
       height: 420,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           const SizedBox(height: 16),
           const Text(
             "Choose Cart",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
 
           Expanded(
             child: ListView.separated(
               itemCount: carts.length,
-              separatorBuilder: (_, __) => const Divider(),
+              separatorBuilder: (_, __) => const Divider(color: Colors.white,thickness: 0,),
               itemBuilder: (_, i) {
                 final cart = carts[i];
 
-                return ListTile(
-                  leading: Icon(Icons.shopping_bag, color: AppColors.primary),
-                  title: Text(cart.name),
-                  onTap: () {
-                    parentContext.read<CartsCubit>().addProductToCart(
-                      cartId: cart.id,
-                      product: product,
-                    );
+                return Card(
+                  margin: EdgeInsetsGeometry.all(10),
+                  elevation: 1,
+               //   shadowColor: AppColors.textLight,
+                  child: ListTile(
+                    leading: Icon(Icons.shopping_bag, color: AppColors.primary,size: 30,),
+                    title: Text(cart.name,style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                    onTap: () {
+                      parentContext.read<CartsCubit>().addProductToCart(
+                        cartId: cart.id,
+                        product: product,
+                      );
 
-                    Navigator.pop(context);
+                      Navigator.pop(context);
 
-                    ScaffoldMessenger.of(parentContext).showSnackBar(
-                      SnackBar(
-                        content: Text("Added to ${cart.name}"),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                  },
+                      ScaffoldMessenger.of(parentContext).showSnackBar(
+                        SnackBar(
+                          content: Text("Added to ${cart.name}"),
+                          backgroundColor: AppColors.primary,
+                        ),
+                      );
+                    },
+                  ),
                 );
               },
             ),
           ),
-
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: ElevatedButton(
+          Container(
+            width: 300,
+            height: 50,
+            margin: EdgeInsetsGeometry.all(10),
+            child: ElevatedButton.icon(
               onPressed: () => _showCreateCartDialog(),
-              child: const Text("Create New Cart"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40), // Same rounded style
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 15),
+              ),
+              icon: const Icon(
+                Icons.add_shopping_cart,
+                color: Colors.white,
+              ),
+              label: const Text(
+                "Create New Cart",
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.white,
+                ),
+              ),
             ),
           ),
+
+
         ],
       ),
     );
@@ -146,7 +173,7 @@ class _ChooseCartContent extends StatelessWidget {
               actions: [
                 if (!isLoading)
                   TextButton(
-                    child: const Text("Cancel"),
+                    child: const Text("Cancel",style: TextStyle(color: AppColors.danger),),
                     onPressed: () => Navigator.pop(context),
                   ),
 
