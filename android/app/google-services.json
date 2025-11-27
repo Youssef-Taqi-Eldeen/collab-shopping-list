@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "662269362178",
+    "project_id": "collab-shop-3da38",
+    "storage_bucket": "collab-shop-3da38.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:662269362178:android:29d2da591862d718c6271b",
+        "android_client_info": {
+          "package_name": "com.example.depi_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCQoDHw_nbB6AY0mL2TBhyJyVFX60bVtI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
