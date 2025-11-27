@@ -1,15 +1,18 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_styles.dart';
 import '../../../../core/utils/size_config.dart';
 
-import 'users_provider.dart';
+import '../../cubit/cart_cubit.dart';
+import '../../model/cart_model.dart';
 
 class UsersScreen extends StatelessWidget {
-  const UsersScreen({super.key});
+  final String cartId;
+
+  const UsersScreen({super.key, required this.cartId});
 
   // Generates a random soft avatar color
   Color _randomAvatarColor() {
@@ -24,9 +27,6 @@ class UsersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final usersProvider = Provider.of<UsersProvider>(context);
-    final users = usersProvider.users;
-
     return Scaffold(
       backgroundColor: AppColors.white,
 
@@ -41,29 +41,42 @@ class UsersScreen extends StatelessWidget {
         ),
       ),
 
-      body: users.isEmpty
-          ? Center(
-        child: Text(
-          "No collaborators yet",
-          style: Styles.body14(context),
-        ),
-      )
-          : ListView.builder(
-        itemCount: users.length,
-        padding: EdgeInsets.all(getResponsiveSize(context, size: 12)),
-        itemBuilder: (context, index) {
-          final username = users[index];
-          return _userTile(context, username, usersProvider);
+      body: StreamBuilder<CartModel?>(
+        stream: context.read<CartsCubit>().streamCart(cartId),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final cart = snapshot.data!;
+          final collaborators = cart.collaborators;
+
+          if (collaborators.isEmpty) {
+            return Center(
+              child: Text(
+                "No collaborators yet",
+                style: Styles.body14(context),
+              ),
+            );
+          }
+
+          return ListView.builder(
+            itemCount: collaborators.length,
+            padding: EdgeInsets.all(getResponsiveSize(context, size: 12)),
+            itemBuilder: (context, index) {
+              final collaborator = collaborators[index];
+              return _userTile(context, collaborator);
+            },
+          );
         },
       ),
     );
   }
 
   // ----------- USER TILE (swipe delete + avatar + dialog) -----------
-  Widget _userTile(
-      BuildContext context, String username, UsersProvider provider) {
+  Widget _userTile(BuildContext context, CartCollaborator collaborator) {
     return Dismissible(
-      key: Key(username),
+      key: Key(collaborator.id),
       direction: DismissDirection.endToStart,
       background: Container(
         margin: const EdgeInsets.symmetric(vertical: 6),
@@ -76,10 +89,13 @@ class UsersScreen extends StatelessWidget {
         child: const Icon(Icons.delete, color: Colors.white, size: 32),
       ),
       confirmDismiss: (direction) async {
-        return await _confirmDeleteDialog(context, username);
+        return await _confirmDeleteDialog(context, collaborator.name);
       },
       onDismissed: (direction) {
-        provider.removeUser(username);
+        context.read<CartsCubit>().removeCollaborator(
+          cartId: cartId,
+          collaboratorId: collaborator.id,
+        );
       },
 
       child: Container(
@@ -106,21 +122,26 @@ class UsersScreen extends StatelessWidget {
             radius: getResponsiveSize(context, size: 22),
             backgroundColor: _randomAvatarColor(),
             child: Text(
-              username[0].toUpperCase(),
+              collaborator.name[0].toUpperCase(),
               style: Styles.bold20(context).copyWith(color: Colors.white),
             ),
           ),
 
           title: Text(
-            username,
+            collaborator.name,
             style: Styles.body16(context).copyWith(fontWeight: FontWeight.bold),
           ),
 
           trailing: IconButton(
             icon: const Icon(Icons.remove_circle_outline, color: Colors.red),
             onPressed: () async {
-              bool? confirmed = await _confirmDeleteDialog(context, username);
-              if (confirmed == true) provider.removeUser(username);
+              bool? confirm = await _confirmDeleteDialog(context, collaborator.name);
+              if (confirm == true) {
+                context.read<CartsCubit>().removeCollaborator(
+                  cartId: cartId,
+                  collaboratorId: collaborator.id,
+                );
+              }
             },
           ),
         ),
@@ -129,8 +150,7 @@ class UsersScreen extends StatelessWidget {
   }
 
   // ----------- DELETE CONFIRMATION DIALOG -----------
-  Future<bool?> _confirmDeleteDialog(
-      BuildContext context, String username) async {
+  Future<bool?> _confirmDeleteDialog(BuildContext context, String username) {
     return showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(

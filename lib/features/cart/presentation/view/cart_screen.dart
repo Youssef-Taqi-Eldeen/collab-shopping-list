@@ -5,7 +5,17 @@ import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_styles.dart';
 import '../../../../core/utils/size_config.dart';
 import '../../cubit/cart_cubit.dart';
-import '../../cubit/cart_state.dart';
+import '../../model/cart_model.dart';
+import 'add_user_screen.dart';
+import 'users_screen.dart';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../core/utils/app_colors.dart';
+import '../../../../core/utils/app_styles.dart';
+import '../../../../core/utils/size_config.dart';
+import '../../cubit/cart_cubit.dart';
 import '../../model/cart_model.dart';
 import 'add_user_screen.dart';
 import 'users_screen.dart';
@@ -17,86 +27,77 @@ class CartDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CartsCubit, CartsState>(
-      builder: (context, state) {
-        if (state is CartsLoading || state is CartsInitial) {
+    return StreamBuilder<CartModel?>(
+      // 🔥 FIXED STREAM HERE
+      stream: context.read<CartsCubit>().firebase.streamCart(cartId),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
 
-        if (state is CartsError) {
-          return Scaffold(
-            body: Center(child: Text(state.message)),
+        final cart = snapshot.data;
+
+        if (cart == null) {
+          return const Scaffold(
+            body: Center(child: Text("Cart not found")),
           );
         }
 
-        if (state is CartsLoaded) {
-          final CartModel? cart = context.read<CartsCubit>().getCart(cartId);
-
-          if (cart == null) {
-            return Scaffold(
-              body: Center(child: Text("Cart not found")),
-            );
-          }
-
-          if (cart.products.isEmpty) {
-            return Scaffold(
-              backgroundColor: AppColors.white,
-              appBar: _appBar(context, cart.name),
-              body: Center(
-                child: Text("Your cart is empty", style: Styles.body16(context)),
-              ),
-            );
-          }
-
+        if (cart.products.isEmpty) {
           return Scaffold(
             backgroundColor: AppColors.white,
-            appBar: _appBar(context, cart.name),
-
-            body: Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    padding: EdgeInsets.all(getResponsiveSize(context, size: 8)),
-                    itemCount: cart.products.length,
-                    itemBuilder: (context, index) {
-                      final product = cart.products[index];
-
-                      return Dismissible(
-                        key: Key(product.id.toString()),
-                        direction: DismissDirection.endToStart,
-                        background: _deleteBg(context),
-                        onDismissed: (_) {
-                          context.read<CartsCubit>().removeProductFromCart(
-                            cartId: cartId,
-                            productId: product.id,
-                          );
-                        },
-                        child: _cartItemCard(context, cart, product),
-                      );
-                    },
-                  ),
-                ),
-
-                _totalSection(context, cart),
-                _checkoutButton(context),
-              ],
+            appBar: _appBar(context, cart),
+            body: Center(
+              child: Text("Your cart is empty", style: Styles.body16(context)),
             ),
           );
         }
 
-        return const SizedBox.shrink();
+        return Scaffold(
+          backgroundColor: AppColors.white,
+          appBar: _appBar(context, cart),
+          body: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.all(getResponsiveSize(context, size: 8)),
+                  itemCount: cart.products.length,
+                  itemBuilder: (context, index) {
+                    final product = cart.products[index];
+
+                    return Dismissible(
+                      key: Key(product.id.toString()),
+                      direction: DismissDirection.endToStart,
+                      background: _deleteBg(context),
+                      onDismissed: (_) {
+                        context.read<CartsCubit>().removeProductFromCart(
+                          cartId: cartId,
+                          productId: product.id,
+                        );
+                      },
+                      child: _cartItemCard(context, cart, product),
+                    );
+                  },
+                ),
+              ),
+
+              _totalSection(context, cart),
+              _checkoutButton(context),
+            ],
+          ),
+        );
       },
     );
   }
 
-  AppBar _appBar(BuildContext context, String name) {
+  AppBar _appBar(BuildContext context, CartModel cart) {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      title: Text(name, style: Styles.bold20(context)),
+      title: Text(cart.name, style: Styles.bold20(context)),
       centerTitle: true,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_ios),
@@ -108,7 +109,9 @@ class CartDetailScreen extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const AddUserScreen()),
+              MaterialPageRoute(
+                builder: (_) => AddUserScreen(cartId: cart.id),
+              ),
             );
           },
         ),
@@ -117,13 +120,19 @@ class CartDetailScreen extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const UsersScreen()),
+              MaterialPageRoute(
+                builder: (_) => UsersScreen(cartId: cart.id),
+              ),
             );
           },
         ),
       ],
     );
   }
+
+  // ---------------------------------------------------------------------------
+  // DELETE BACKGROUND
+  // ---------------------------------------------------------------------------
 
   Widget _deleteBg(BuildContext context) {
     return Container(
@@ -140,10 +149,12 @@ class CartDetailScreen extends StatelessWidget {
     );
   }
 
+
   Widget _cartItemCard(BuildContext context, CartModel cart, product) {
     return Container(
       height: getResponsiveSize(context, size: 100),
-      margin: EdgeInsets.symmetric(vertical: getResponsiveSize(context, size: 6)),
+      margin:
+      EdgeInsets.symmetric(vertical: getResponsiveSize(context, size: 6)),
       child: Card(
         elevation: 5,
         shadowColor: Colors.black12,
@@ -179,7 +190,7 @@ class CartDetailScreen extends StatelessWidget {
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       "\$${(product.price * product.qty).toStringAsFixed(2)}",
                       style: Styles.bold20(context).copyWith(
@@ -233,6 +244,7 @@ class CartDetailScreen extends StatelessWidget {
     );
   }
 
+
   Widget _totalSection(BuildContext context, CartModel cart) {
     final total = cart.products.fold(
         0.0, (sum, item) => sum + (item.price * item.qty));
@@ -254,6 +266,10 @@ class CartDetailScreen extends StatelessWidget {
       ),
     );
   }
+
+  // ---------------------------------------------------------------------------
+  // CHECKOUT BUTTON
+  // ---------------------------------------------------------------------------
 
   Widget _checkoutButton(BuildContext context) {
     return Padding(

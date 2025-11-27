@@ -18,10 +18,10 @@ class CartsListScreen extends StatefulWidget {
 }
 
 class _CartsListScreenState extends State<CartsListScreen> {
+
   @override
   void initState() {
     super.initState();
-    context.read<CartsCubit>().loadCarts();
   }
 
   @override
@@ -32,10 +32,7 @@ class _CartsListScreenState extends State<CartsListScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text(
-          "My Carts",
-          style: Styles.bold20(context),
-        ),
+        title: Text("My Carts", style: Styles.bold20(context)),
       ),
 
       body: BlocBuilder<CartsCubit, CartsState>(
@@ -55,10 +52,7 @@ class _CartsListScreenState extends State<CartsListScreen> {
 
             if (carts.isEmpty) {
               return Center(
-                child: Text(
-                  "No carts created yet",
-                  style: Styles.body16(context),
-                ),
+                child: Text("No carts created yet", style: Styles.body16(context)),
               );
             }
 
@@ -69,7 +63,7 @@ class _CartsListScreenState extends State<CartsListScreen> {
               separatorBuilder: (_, __) =>
                   SizedBox(height: getResponsiveSize(context, size: 12)),
               itemBuilder: (context, index) {
-                final CartModel cart = carts[index];
+                final cart = carts[index];
                 return _cartTile(context, cart);
               },
             );
@@ -84,20 +78,21 @@ class _CartsListScreenState extends State<CartsListScreen> {
   Widget _cartTile(BuildContext context, CartModel cart) {
     return InkWell(
       onTap: () {
-        Navigator.of(context).push(
+        Navigator.push(
+          context,
           MaterialPageRoute(
             builder: (_) => CartDetailScreen(cartId: cart.id),
           ),
         );
       },
-      borderRadius:
-      BorderRadius.circular(getResponsiveRadius(context, radius: 14)),
+      borderRadius: BorderRadius.circular(getResponsiveRadius(context, radius: 14)),
       child: Container(
         padding: EdgeInsets.all(getResponsiveSize(context, size: 14)),
         decoration: BoxDecoration(
           color: AppColors.white,
-          borderRadius:
-          BorderRadius.circular(getResponsiveRadius(context, radius: 14)),
+          borderRadius: BorderRadius.circular(
+            getResponsiveRadius(context, radius: 14),
+          ),
           boxShadow: const [
             BoxShadow(
               color: Colors.black12,
@@ -106,9 +101,9 @@ class _CartsListScreenState extends State<CartsListScreen> {
             ),
           ],
         ),
-
         child: Row(
           children: [
+            // Icon box
             Container(
               height: getResponsiveSize(context, size: 46),
               width: getResponsiveSize(context, size: 46),
@@ -126,6 +121,7 @@ class _CartsListScreenState extends State<CartsListScreen> {
 
             SizedBox(width: getResponsiveSize(context, size: 12)),
 
+            // Name + details
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -11,12 +11,6 @@ class ChooseCartSheet {
     required BuildContext parentContext,
     required Product product,
   }) {
-    final state = parentContext.read<CartsCubit>().state;
-
-    if (state is! CartsLoaded) return;
-
-    final carts = state.carts;
-
     showModalBottomSheet(
       context: parentContext,
       backgroundColor: Colors.white,
@@ -24,10 +18,32 @@ class ChooseCartSheet {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (_) {
-        return _ChooseCartContent(
-          parentContext: parentContext,
-          carts: carts,
-          product: product,
+        return BlocBuilder<CartsCubit, CartsState>(
+          builder: (context, state) {
+            if (state is CartsLoading || state is CartsInitial) {
+              return const SizedBox(
+                height: 200,
+                child: Center(child: CircularProgressIndicator()),
+              );
+            }
+
+            if (state is CartsError) {
+              return SizedBox(
+                height: 200,
+                child: Center(child: Text(state.message)),
+              );
+            }
+
+            if (state is CartsLoaded) {
+              return _ChooseCartContent(
+                parentContext: parentContext,
+                carts: state.carts,
+                product: product,
+              );
+            }
+
+            return const SizedBox.shrink();
+          },
         );
       },
     );
@@ -56,6 +72,8 @@ class _ChooseCartContent extends StatelessWidget {
             "Choose Cart",
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
+
+          // ---------------- CARTS LIST ----------------
           Expanded(
             child: ListView.separated(
               itemCount: carts.length,
@@ -86,6 +104,7 @@ class _ChooseCartContent extends StatelessWidget {
             ),
           ),
 
+          // ---------------- CREATE NEW CART BUTTON ----------------
           Padding(
             padding: const EdgeInsets.all(16),
             child: ElevatedButton(
@@ -98,55 +117,95 @@ class _ChooseCartContent extends StatelessWidget {
     );
   }
 
+  // ---------------------------------------------------------------
+  // CREATE CART DIALOG
+  // ---------------------------------------------------------------
   void _showCreateCartDialog() {
     final controller = TextEditingController();
+    bool isLoading = false;
 
     showDialog(
       context: parentContext,
-      builder: (_) => AlertDialog(
-        title: const Text("Create Cart"),
-        content: TextField(
-          controller: controller,
-          decoration: const InputDecoration(
-            hintText: "Cart name",
-          ),
-        ),
-        actions: [
-          TextButton(
-            child: const Text("Cancel"),
-            onPressed: () => Navigator.pop(parentContext),
-          ),
-          ElevatedButton(
-            child: const Text("Create"),
-            onPressed: () async {
-              final name = controller.text.trim();
-              if (name.isEmpty) return;
+      barrierDismissible: false,
+      builder: (_) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text("Create Cart"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: controller,
+                    decoration: const InputDecoration(
+                      hintText: "Cart name",
+                    ),
+                  ),
 
-              await parentContext.read<CartsCubit>().createCart(name);
+                  if (isLoading) ...[
+                    const SizedBox(height: 20),
+                    const CircularProgressIndicator(color: AppColors.primary),
+                  ],
+                ],
+              ),
+              actions: [
+                if (!isLoading)
+                  TextButton(
+                    child: const Text("Cancel"),
+                    onPressed: () => Navigator.pop(context),
+                  ),
 
+                if (!isLoading)
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                    ),
+                    child: const Text(
+                        "Create", style: TextStyle(color: Colors.white)),
+                    onPressed: () async {
+                      final name = controller.text.trim();
+                      if (name.isEmpty) return;
 
-              final newState =
-              parentContext.read<CartsCubit>().state as CartsLoaded;
+                      setState(() => isLoading = true);
 
-              final newCart = newState.carts.last;
+                      try {
+                        // 1️⃣ Create new cart and get ID
+                        final newCartId =
+                        await parentContext.read<CartsCubit>().createCart(name);
 
-              await parentContext.read<CartsCubit>().addProductToCart(
-                cartId: newCart.id,
-                product: product,
-              );
+                        // 2️⃣ Add product to new cart
+                        await parentContext.read<CartsCubit>().addProductToCart(
+                          cartId: newCartId,
+                          product: product,
+                        );
 
-              Navigator.pop(parentContext);
+                        // 3️⃣ Smooth animated close
+                        await Future.delayed(const Duration(milliseconds: 200));
+                        Navigator.pop(context);
 
-              ScaffoldMessenger.of(parentContext).showSnackBar(
-                SnackBar(
-                  content: Text("Added to $name"),
-                  backgroundColor: Colors.green,
-                ),
-              );
-            },
-          ),
-        ],
-      ),
+                        // 4️⃣ Success message
+                        ScaffoldMessenger.of(parentContext).showSnackBar(
+                          SnackBar(
+                            content: Text("Added to $name"),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      } catch (e) {
+                        setState(() => isLoading = false);
+                        ScaffoldMessenger.of(parentContext).showSnackBar(
+                          SnackBar(
+                            content: Text("Error: $e"),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    },
+                  ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }

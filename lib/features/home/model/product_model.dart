@@ -10,7 +10,7 @@ class Product {
   final String category;
   final String thumbnail;
   final List<String> images;
-  int qty;
+  final int qty;
 
   Product({
     required this.id,
@@ -24,22 +24,28 @@ class Product {
     required this.category,
     required this.thumbnail,
     required this.images,
-    this.qty=1
+    this.qty = 1,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      id: json["id"],
-      title: json["title"],
-      description: json["description"],
-      price: json["price"],
-      discountPercentage: json["discountPercentage"],
-      rating: json["rating"],
-      stock: json["stock"],
+      id: json["id"] is int ? json["id"] : int.tryParse(json["id"].toString()) ?? 0,
+
+      title: json["title"] ?? "",
+      description: json["description"] ?? "",
+      price: json["price"] ?? 0,
+      discountPercentage: json["discountPercentage"] ?? 0,
+      rating: json["rating"] ?? 0,
+      stock: json["stock"] ?? 0,
       brand: json["brand"] ?? "",
-      category: json["category"],
-      thumbnail: json["thumbnail"],
-      images: List<String>.from(json["images"]),
+      category: json["category"] ?? "",
+      thumbnail: json["thumbnail"] ?? "",
+
+      images: json["images"] != null
+          ? List<String>.from(json["images"])
+          : [],
+
+      qty: json["qty"] ?? 1,  // 🔥 Firestore qty or default
     );
   }
 
@@ -56,36 +62,26 @@ class Product {
       "category": category,
       "thumbnail": thumbnail,
       "images": images,
+      "qty": qty,
     };
   }
+
   Product copyWith({
-    int? id,
-    String? title,
-    String? description,
-    num? price,
-    num? discountPercentage,
-    num? rating,
-    int? stock,
-    String? brand,
-    String? category,
-    String? thumbnail,
-    List<String>? images,
     int? qty,
   }) {
     return Product(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      description: description ?? this.description,
-      price: price ?? this.price,
-      discountPercentage: discountPercentage ?? this.discountPercentage,
-      rating: rating ?? this.rating,
-      stock: stock ?? this.stock,
-      brand: brand ?? this.brand,
-      category: category ?? this.category,
-      thumbnail: thumbnail ?? this.thumbnail,
-      images: images ?? this.images,
+      id: id,
+      title: title,
+      description: description,
+      price: price,
+      discountPercentage: discountPercentage,
+      rating: rating,
+      stock: stock,
+      brand: brand,
+      category: category,
+      thumbnail: thumbnail,
+      images: images,
       qty: qty ?? this.qty,
     );
   }
-
 }

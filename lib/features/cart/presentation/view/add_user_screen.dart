@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_styles.dart';
 import '../../../../core/utils/size_config.dart';
-
-import 'users_provider.dart';
+import '../../cubit/cart_cubit.dart';
+import '../../model/cart_model.dart';
 
 class AddUserScreen extends StatefulWidget {
-  const AddUserScreen({super.key});
+  final String cartId;
+
+  const AddUserScreen({super.key, required this.cartId});
 
   @override
   State<AddUserScreen> createState() => _AddUserScreenState();
@@ -16,11 +19,32 @@ class AddUserScreen extends StatefulWidget {
 
 class _AddUserScreenState extends State<AddUserScreen> {
   final TextEditingController userController = TextEditingController();
+  bool isLoading = false;
+
+  // ----------------------------------------------------
+  // 🔵 Find user in Firestore by email
+  // ----------------------------------------------------
+  Future<CartCollaborator?> findUserByEmail(String email) async {
+    final snap = await FirebaseFirestore.instance
+        .collection("users")
+        .where("email", isEqualTo: email)
+        .limit(1)
+        .get();
+
+    if (snap.docs.isEmpty) return null;
+
+    final data = snap.docs.first.data();
+    final uid = snap.docs.first.id;
+
+    return CartCollaborator(
+      id: uid,
+      name: data["name"] ?? email,
+      email: data["email"] ?? email,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final usersProvider = Provider.of<UsersProvider>(context);
-
     return Scaffold(
       backgroundColor: AppColors.white,
 
@@ -43,7 +67,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
             TextField(
               controller: userController,
               decoration: InputDecoration(
-                labelText: "Enter username",
+                labelText: "Enter user email",
                 labelStyle: Styles.body14(context).copyWith(
                   color: AppColors.textLight,
                 ),
@@ -70,19 +94,35 @@ class _AddUserScreenState extends State<AddUserScreen> {
               width: double.infinity,
               height: getResponsiveSize(context, size: 55),
               child: ElevatedButton(
-                onPressed: () {
-                  if (userController.text.isNotEmpty) {
-                    usersProvider.addUser(userController.text);
-                    userController.clear();
+                onPressed: isLoading ? null : () async {
+                  final email = userController.text.trim();
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: const Text("User Added"),
-                        duration: const Duration(seconds: 1),
-                        backgroundColor: AppColors.primary,
-                      ),
-                    );
+                  if (email.isEmpty) {
+                    _show("Please enter an email", isError: true);
+                    return;
                   }
+
+                  setState(() => isLoading = true);
+
+                  // 1️⃣ Search for user
+                  final collaborator = await findUserByEmail(email);
+
+                  if (collaborator == null) {
+                    setState(() => isLoading = false);
+                    _show("No user found with this email", isError: true);
+                    return;
+                  }
+
+                  // 2️⃣ Add collaborator to cart
+                  await context.read<CartsCubit>().addCollaborator(
+                    cartId: widget.cartId,
+                    collaborator: collaborator,
+                  );
+
+                  setState(() => isLoading = false);
+                  userController.clear();
+
+                  _show("User Added Successfully!");
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
@@ -91,14 +131,22 @@ class _AddUserScreenState extends State<AddUserScreen> {
                         getResponsiveRadius(context, radius: 14)),
                   ),
                 ),
-                child: Text(
-                  "Add User",
-                  style: Styles.button16(context),
-                ),
+                child: isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : Text("Add User", style: Styles.button16(context)),
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _show(String msg, {bool isError = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        backgroundColor: isError ? Colors.red : AppColors.primary,
       ),
     );
   }

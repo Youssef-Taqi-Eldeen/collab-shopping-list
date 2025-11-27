@@ -1,98 +1,113 @@
-// lib/features/cart/cubit/cart_cubit.dart
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uuid/uuid.dart';
-
-import '../../home/model/product_model.dart';
+import '../../../core/services/firebase_service.dart';
 import '../model/cart_model.dart';
-import '../model/cart_repository.dart';
+import '../../home/model/product_model.dart';
 import 'cart_state.dart';
 
 class CartsCubit extends Cubit<CartsState> {
-  final CartsRepository repo;
-  final String userId;
+  final FirebaseService firebase;
 
-  CartsCubit(this.repo, this.userId) : super(CartsInitial());
-
-  Future<void> loadCarts() async {
-    emit(CartsLoading());
-    try {
-      final carts = await repo.getCarts(userId);
-      emit(CartsLoaded(carts));
-    } catch (_) {
-      emit(CartsError("Failed to load carts"));
-    }
+  CartsCubit(this.firebase) : super(CartsInitial()) {
+    _listen();
   }
 
+  // 🔵 Listen to all user carts in real-time
+  void _listen() {
+    emit(CartsLoading());
+
+    firebase.streamCarts().listen((carts) {
+      emit(CartsLoaded(carts));
+    });
+  }
+
+  // 🔵 Get cart from current loaded state
   CartModel? getCart(String id) {
     if (state is! CartsLoaded) return null;
+    final carts = (state as CartsLoaded).carts;
     try {
-      return (state as CartsLoaded).carts.firstWhere((c) => c.id == id);
+      return carts.firstWhere((c) => c.id == id);
     } catch (_) {
       return null;
     }
   }
 
-  Future<void> createCart(String name) async {
-    await repo.createCart(userId: userId, name: name);
-    await loadCarts();
+  // 🔵 Listen to ONE cart live
+  /*
+  Stream<CartModel?> streamCart(String cartId) {
+    return FirebaseFirestore.instance
+        .collection("carts")
+        .doc(cartId)
+        .snapshots()
+        .map((doc) {
+      if (!doc.exists) return null;
+      return CartModel.fromMap({...doc.data()!, "id": doc.id});
+    });
+  }*/
+  // carts_cubit.dart
+
+  Stream<CartModel?> streamCart(String cartId) {
+    return firebase.streamCart(cartId);
   }
 
+
+  // 🔵 Create new cart
+  Future<String> createCart(String name) async {
+    final id = await firebase.createCart(name);
+    return id;
+  }
+
+  // 🔵 Add product to cart
   Future<void> addProductToCart({
     required String cartId,
     required Product product,
   }) async {
-    await repo.addProductToCart(cartId: cartId, product: product);
-    await loadCarts();
+    await firebase.addProductToCart(cartId: cartId, product: product);
   }
 
+  // 🔵 Remove product (correct name now)
   Future<void> removeProductFromCart({
     required String cartId,
     required int productId,
   }) async {
-    await repo.removeProductFromCart(cartId: cartId, productId: productId);
-    await loadCarts();
+    await firebase.removeProductFromCart(
+      cartId: cartId,
+      productId: productId,
+    );
   }
 
+  // 🔵 Update product quantity
   Future<void> updateQuantity({
     required String cartId,
     required Product product,
     required bool increment,
   }) async {
-    await repo.updateQuantity(
+    await firebase.updateQuantity(
       cartId: cartId,
       product: product,
       increment: increment,
     );
-    await loadCarts();
   }
 
+  // 🔵 Add collaborator (correct method name)
   Future<void> addCollaborator({
     required String cartId,
-    required String name,
-    required String email,
+    required CartCollaborator collaborator,
   }) async {
-    final collaborator = CartCollaborator(
-      id: const Uuid().v4(),
-      name: name,
-      email: email,
-    );
-
-    await repo.addCollaborator(
+    await firebase.addCollaboratorToCart(
       cartId: cartId,
       collaborator: collaborator,
     );
-    await loadCarts();
   }
 
+  // 🔵 Remove collaborator (correct method name)
   Future<void> removeCollaborator({
     required String cartId,
     required String collaboratorId,
   }) async {
-    await repo.removeCollaborator(
+    await firebase.removeCollaborator(
       cartId: cartId,
       collaboratorId: collaboratorId,
     );
-    await loadCarts();
   }
 }
