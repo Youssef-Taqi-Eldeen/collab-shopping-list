@@ -73,7 +73,6 @@ class UsersScreen extends StatelessWidget {
     );
   }
 
-  // ----------- USER TILE (swipe delete + avatar + dialog) -----------
   Widget _userTile(BuildContext context, CartCollaborator collaborator) {
     return Dismissible(
       key: Key(collaborator.id),
@@ -149,7 +148,7 @@ class UsersScreen extends StatelessWidget {
     );
   }
 
-  // ----------- DELETE CONFIRMATION DIALOG -----------
+
   Future<bool?> _confirmDeleteDialog(BuildContext context, String username) {
     return showDialog<bool>(
       context: context,

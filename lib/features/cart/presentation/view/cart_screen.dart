@@ -130,10 +130,6 @@ class CartDetailScreen extends StatelessWidget {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // DELETE BACKGROUND
-  // ---------------------------------------------------------------------------
-
   Widget _deleteBg(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -266,10 +262,6 @@ class CartDetailScreen extends StatelessWidget {
       ),
     );
   }
-
-  // ---------------------------------------------------------------------------
-  // CHECKOUT BUTTON
-  // ---------------------------------------------------------------------------
 
   Widget _checkoutButton(BuildContext context) {
     return Padding(

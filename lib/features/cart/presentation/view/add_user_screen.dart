@@ -21,9 +21,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
   final TextEditingController userController = TextEditingController();
   bool isLoading = false;
 
-  // ----------------------------------------------------
-  // 🔵 Find user in Firestore by email
-  // ----------------------------------------------------
   Future<CartCollaborator?> findUserByEmail(String email) async {
     final snap = await FirebaseFirestore.instance
         .collection("users")
@@ -63,7 +60,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
         padding: EdgeInsets.all(getResponsiveSize(context, size: 16)),
         child: Column(
           children: [
-            // ---------- INPUT FIELD ----------
+
             TextField(
               controller: userController,
               decoration: InputDecoration(
@@ -89,7 +86,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
 
             SizedBox(height: getResponsiveSize(context, size: 20)),
 
-            // ---------- ADD USER BUTTON ----------
             SizedBox(
               width: double.infinity,
               height: getResponsiveSize(context, size: 55),
@@ -104,7 +100,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
 
                   setState(() => isLoading = true);
 
-                  // 1️⃣ Search for user
                   final collaborator = await findUserByEmail(email);
 
                   if (collaborator == null) {
@@ -113,7 +108,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     return;
                   }
 
-                  // 2️⃣ Add collaborator to cart
                   await context.read<CartsCubit>().addCollaborator(
                     cartId: widget.cartId,
                     collaborator: collaborator,

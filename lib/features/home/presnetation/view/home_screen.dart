@@ -160,7 +160,6 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           }
 
-          // REAL CATEGORIES
           final Category cat = categories[i - 1];
           final bool isSelected =
               context.read<HomeCubit>().selectedCategory == cat.slug;
@@ -195,7 +194,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ---------- PRODUCT SECTION WITH SHIMMER ----------
   Widget _productsSection(BuildContext context, HomeState state) {
     // shimmer loading when filtering/searching
     if (state is HomeProductsLoading) {
@@ -214,7 +212,6 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
-    // loaded products
     if (state is HomeLoaded) {
       return Expanded(
         child: GridView.builder(
@@ -234,7 +231,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return const SizedBox.shrink();
   }
 
-  // ---------- SHIMMER PRODUCT CARD ----------
   Widget _shimmerCard(BuildContext context) {
     return Shimmer.fromColors(
       baseColor: Colors.grey.shade300,
@@ -275,7 +271,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ---------- REAL PRODUCT CARD ----------
   Widget _productCard(BuildContext context, Product product) {
     return GestureDetector(
       onTap: () {

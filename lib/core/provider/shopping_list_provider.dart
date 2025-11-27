@@ -18,11 +18,11 @@ class ShoppingListProvider with ChangeNotifier {
     return _firestore
         .collection('lists')
         .where(
-          Filter.or(
-            Filter('ownerId', isEqualTo: user.uid),
-            Filter('collaborators', arrayContains: user.uid),
-          ),
-        )
+      Filter.or(
+        Filter('ownerId', isEqualTo: user.uid),
+        Filter('collaborators', arrayContains: user.uid),
+      ),
+    )
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((doc) {
@@ -98,9 +98,9 @@ class ShoppingListProvider with ChangeNotifier {
     // Ideally, we would use a subcollection for items to make this atomic and easier,
     // but the requirement says "items array OR subcollection".
     // Array is easier for small lists. Let's stick to array as per user request example.
-    
+
     final docRef = _firestore.collection('lists').doc(listId);
-    
+
     return _firestore.runTransaction((transaction) async {
       final snapshot = await transaction.get(docRef);
       if (!snapshot.exists) return;
@@ -132,12 +132,12 @@ class ShoppingListProvider with ChangeNotifier {
       }
 
       final collaboratorUid = userSnapshot.docs.first.id;
-      
+
       // Check if already a collaborator or owner
       // We can do this check on the client side or just let arrayUnion handle duplicates.
       // But we should check if it's the owner.
       // We'll just add it. arrayUnion handles unique.
-      
+
       await _firestore.collection('lists').doc(listId).update({
         'collaborators': FieldValue.arrayUnion([collaboratorUid]),
       });

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_styles.dart';
 import '../../../../core/utils/size_config.dart';
@@ -121,7 +120,6 @@ class _CartsListScreenState extends State<CartsListScreen> {
 
             SizedBox(width: getResponsiveSize(context, size: 12)),
 
-            // Name + details
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

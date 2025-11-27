@@ -73,7 +73,6 @@ class _ChooseCartContent extends StatelessWidget {
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
 
-          // ---------------- CARTS LIST ----------------
           Expanded(
             child: ListView.separated(
               itemCount: carts.length,
@@ -104,7 +103,6 @@ class _ChooseCartContent extends StatelessWidget {
             ),
           ),
 
-          // ---------------- CREATE NEW CART BUTTON ----------------
           Padding(
             padding: const EdgeInsets.all(16),
             child: ElevatedButton(
@@ -117,9 +115,6 @@ class _ChooseCartContent extends StatelessWidget {
     );
   }
 
-  // ---------------------------------------------------------------
-  // CREATE CART DIALOG
-  // ---------------------------------------------------------------
   void _showCreateCartDialog() {
     final controller = TextEditingController();
     bool isLoading = false;
@@ -169,25 +164,21 @@ class _ChooseCartContent extends StatelessWidget {
                       setState(() => isLoading = true);
 
                       try {
-                        // 1️⃣ Create new cart and get ID
                         final newCartId =
                         await parentContext.read<CartsCubit>().createCart(name);
 
-                        // 2️⃣ Add product to new cart
                         await parentContext.read<CartsCubit>().addProductToCart(
                           cartId: newCartId,
                           product: product,
                         );
 
-                        // 3️⃣ Smooth animated close
                         await Future.delayed(const Duration(milliseconds: 200));
                         Navigator.pop(context);
 
-                        // 4️⃣ Success message
                         ScaffoldMessenger.of(parentContext).showSnackBar(
                           SnackBar(
                             content: Text("Added to $name"),
-                            backgroundColor: Colors.green,
+                            backgroundColor: AppColors.success,
                           ),
                         );
                       } catch (e) {
@@ -195,7 +186,7 @@ class _ChooseCartContent extends StatelessWidget {
                         ScaffoldMessenger.of(parentContext).showSnackBar(
                           SnackBar(
                             content: Text("Error: $e"),
-                            backgroundColor: Colors.red,
+                            backgroundColor:AppColors.danger,
                           ),
                         );
                       }

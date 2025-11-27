@@ -2,17 +2,13 @@ import 'package:depi_project/core/provider/auth_app.dart';
 import 'package:depi_project/core/provider/shopping_list_provider.dart';
 import 'package:depi_project/features/cart/presentation/view/users_provider.dart';
 import 'package:depi_project/firebase_options.dart';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-
 import 'core/services/api_services.dart';
 import 'core/services/firebase_service.dart';
-import 'core/services/local_cart_repositort.dart';
 import 'core/utils/app_router.dart';
-
 import 'features/home/cubit/home_cubit.dart';
 import 'features/cart/cubit/cart_cubit.dart';
 
@@ -46,7 +42,6 @@ class MyApp extends StatelessWidget {
 
         ],
 
-        /// 🔥 Firebase repo uses dynamic router based on auth state
         child: Consumer<AuthProvider>(
           builder: (context, authProvider, _) {
             return MaterialApp.router(
