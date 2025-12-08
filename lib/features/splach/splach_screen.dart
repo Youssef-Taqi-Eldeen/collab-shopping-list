@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:depi_project/core/provider/auth_app.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -36,16 +37,25 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     _controller.forward();
 
-    Timer(const Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 3), () async {
       if (!mounted) return;
       
+      final prefs = await SharedPreferences.getInstance();
+      final bool onboardingSeen = prefs.getBool('onboarding_seen') ?? false;
+
+      if (!mounted) return;
+
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       
       // Navigate based on auth state
       if (authProvider.currentUser != null) {
         context.go(AppRouter.kHomeView);
       } else {
-        context.go(AppRouter.kAuthView);
+        if (onboardingSeen) {
+          context.go(AppRouter.kAuthView);
+        } else {
+          context.go(AppRouter.kOnboardingView);
+        }
       }
     });
   }

@@ -3,10 +3,12 @@ import 'package:depi_project/features/auth/presentation/view/login_view.dart';
 import 'package:depi_project/features/splach/splach_screen.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:depi_project/features/onboarding/presentation/view/onboarding_view.dart';
 import '../../features/navigation/mainLayout.dart';
 
 abstract class AppRouter {
   static const String kSplashView = '/splash';
+  static const String kOnboardingView = '/onboarding';
   static const String kAuthView = '/';
   static const String kHomeView = '/home';
 
@@ -18,15 +20,16 @@ abstract class AppRouter {
         final bool isLoggedIn = authProvider.currentUser != null;
         final bool isLoggingIn = state.matchedLocation == kAuthView;
         final bool isSplash = state.matchedLocation == kSplashView;
+        final bool isOnboarding = state.matchedLocation == kOnboardingView;
 
         // If on splash, don't redirect yet (Splash screen handles navigation)
         if (isSplash) return null;
 
-        if (!isLoggedIn && !isLoggingIn) {
+        if (!isLoggedIn && !isLoggingIn && !isOnboarding) {
           return kAuthView;
         }
 
-        if (isLoggedIn && isLoggingIn) {
+        if (isLoggedIn && (isLoggingIn || isOnboarding)) {
           return kHomeView;
         }
 
@@ -44,6 +47,11 @@ abstract class AppRouter {
           builder: (context, state) {
             return const LoginScreen();
           },
+        ),
+        GoRoute(
+          name: kOnboardingView,
+          path: kOnboardingView,
+          builder: (context, state) => const OnboardingView(),
         ),
 
         GoRoute(
