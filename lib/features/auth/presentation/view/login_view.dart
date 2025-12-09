@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'register_screen.dart';
 
+import '../../../../core/utils/app_colors.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -222,19 +224,19 @@ class _LoginScreenState extends State<LoginScreen> {
                       labelText: 'Email',
                       labelStyle: TextStyle(color: Colors.grey[600]),
                       filled: true,
-                      fillColor: const Color(0xFFF5F5F5),
+                      fillColor: AppColors.white,
                       prefixIcon: Icon(
                         Icons.email_outlined,
                         color: Colors.grey[600],
                       ),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: AppColors.border),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(12),
                         borderSide: const BorderSide(
-                          color: Colors.blueGrey,
+                          color: AppColors.primary,
                           width: 1.5,
                         ),
                       ),
@@ -265,7 +267,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       labelText: 'Password',
                       labelStyle: TextStyle(color: Colors.grey[600]),
                       filled: true,
-                      fillColor: const Color(0xFFF5F5F5),
+                      fillColor: AppColors.white,
                       prefixIcon: Icon(
                         Icons.lock_outline,
                         color: Colors.grey[600],
@@ -284,13 +286,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: AppColors.border),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(12),
                         borderSide: const BorderSide(
-                          color: Colors.blueGrey,
+                          color: AppColors.primary,
                           width: 1.5,
                         ),
                       ),
@@ -314,12 +316,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: ElevatedButton(
                       onPressed: _isLoading ? null : _handleLogin,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blueGrey[800],
+                        backgroundColor: AppColors.primary,
                         foregroundColor: Colors.white,
-                        disabledBackgroundColor: Colors.blueGrey[800]?.withOpacity(0.6),
+                        disabledBackgroundColor: AppColors.primary.withOpacity(0.6),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(14),
                         ),
                       ),
                       child: _isLoading

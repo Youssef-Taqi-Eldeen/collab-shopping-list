@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart' hide AuthProvider;
 import 'package:depi_project/core/provider/auth_app.dart' show AuthProvider;
 import 'package:depi_project/features/navigation/mainLayout.dart';
 
+import '../../../../core/utils/app_colors.dart';
+
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -269,15 +271,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       labelText: 'Password',
                       labelStyle: TextStyle(color: Colors.grey[600]),
                       filled: true,
-                      fillColor: const Color(0xFFF5F5F5),
+                      fillColor: AppColors.white,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: AppColors.border),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(12),
                         borderSide: const BorderSide(
-                          color: Colors.blueGrey,
+                          color: AppColors.primary,
                           width: 1.5,
                         ),
                       ),
@@ -324,15 +326,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       labelText: 'Confirm Password',
                       labelStyle: TextStyle(color: Colors.grey[600]),
                       filled: true,
-                      fillColor: const Color(0xFFF5F5F5),
+                      fillColor: AppColors.white,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: AppColors.border),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(12),
                         borderSide: const BorderSide(
-                          color: Colors.blueGrey,
+                          color: AppColors.primary,
                           width: 1.5,
                         ),
                       ),
@@ -374,12 +376,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: ElevatedButton(
                       onPressed: _isLoading ? null : _handleRegister,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blueGrey[800],
+                        backgroundColor: AppColors.primary,
                         foregroundColor: Colors.white,
-                        disabledBackgroundColor: Colors.blueGrey[800]?.withOpacity(0.6),
+                        disabledBackgroundColor: AppColors.primary.withOpacity(0.6),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(14),
                         ),
                       ),
                       child: _isLoading

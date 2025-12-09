@@ -81,25 +81,37 @@ class _ChooseCartContent extends StatelessWidget {
               itemBuilder: (_, i) {
                 final cart = carts[i];
 
-                return Card(
-                  margin: EdgeInsetsGeometry.all(10),
-                  elevation: 1,
-               //   shadowColor: AppColors.textLight,
+                return Container(
+                  margin: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 4,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
                   child: ListTile(
-                    leading: Icon(Icons.shopping_bag, color: AppColors.primary,size: 30,),
-                    title: Text(cart.name,style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                    leading: const Icon(Icons.shopping_bag,
+                        color: AppColors.primary, size: 30),
+                    title: Text(cart.name,
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.w500)),
                     onTap: () {
                       parentContext.read<CartsCubit>().addProductToCart(
-                        cartId: cart.id,
-                        product: product,
-                      );
+                            cartId: cart.id,
+                            product: product,
+                          );
 
                       Navigator.pop(context);
 
                       ScaffoldMessenger.of(parentContext).showSnackBar(
                         SnackBar(
                           content: Text("Added to ${cart.name}"),
-                          backgroundColor: AppColors.primary,
+                          backgroundColor: AppColors.success,
                         ),
                       );
                     },
@@ -111,7 +123,7 @@ class _ChooseCartContent extends StatelessWidget {
           Container(
             width: 300,
             height: 50,
-            margin: EdgeInsetsGeometry.all(10),
+            margin: const EdgeInsets.all(10),
             child: ElevatedButton.icon(
               onPressed: () => _showCreateCartDialog(),
               style: ElevatedButton.styleFrom(
@@ -135,8 +147,6 @@ class _ChooseCartContent extends StatelessWidget {
               ),
             ),
           ),
-
-
         ],
       ),
     );
@@ -153,6 +163,8 @@ class _ChooseCartContent extends StatelessWidget {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
+              backgroundColor: Colors.white,
+              surfaceTintColor: Colors.white,
               title: const Text("Create Cart"),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -173,7 +185,8 @@ class _ChooseCartContent extends StatelessWidget {
               actions: [
                 if (!isLoading)
                   TextButton(
-                    child: const Text("Cancel",style: TextStyle(color: AppColors.danger),),
+                    child: const Text("Cancel",
+                        style: TextStyle(color: Colors.grey)),
                     onPressed: () => Navigator.pop(context),
                   ),
 

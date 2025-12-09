@@ -43,9 +43,8 @@ class _OnboardingViewState extends State<OnboardingView> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Colors.blueGrey[900]!,
-              Colors.blueGrey[800]!,
-              Colors.blueGrey[700]!,
+              AppColors.primary,
+              AppColors.primaryLight,
             ],
           ),
         ),
@@ -149,7 +148,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
-                            foregroundColor: Colors.blueGrey[900],
+                            foregroundColor: AppColors.primary,
                             elevation: 8,
                             shadowColor: Colors.black26,
                             shape: RoundedRectangleBorder(
@@ -159,7 +158,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                           child: Text(
                             _currentPage == _contents.length - 1 ? "Get Started" : "Next",
                             style: Styles.button16(context).copyWith(
-                              color: Colors.blueGrey[900],
+                              color: AppColors.primary,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 0.5,
                             ),

@@ -60,7 +60,7 @@ service cloud.firestore {
       // Allow read if user is owner OR collaborator
       allow read: if isAuthenticated() && (
         isOwner(resource.data.ownerId) || 
-        isCollaborator(resource.data.collaborators)
+        isCollaborator(resource.data.collaboratorsIds)
       );
       
       // Allow create if user is authenticated
@@ -70,7 +70,7 @@ service cloud.firestore {
       // Allow update if user is owner OR collaborator
       allow update: if isAuthenticated() && (
         isOwner(resource.data.ownerId) || 
-        isCollaborator(resource.data.collaborators)
+        isCollaborator(resource.data.collaboratorsIds)
       );
       
       // Allow delete only if user is owner
