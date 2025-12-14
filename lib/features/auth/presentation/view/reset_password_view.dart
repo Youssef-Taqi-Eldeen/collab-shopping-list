@@ -259,7 +259,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       filled: true,
                       fillColor: AppColors.white,
                       prefixIcon: Icon(
-                        Icons.lock_outline_rounded,
+                        Icons.lock_outline,
                         color: Colors.grey[600],
                       ),
                       suffixIcon: IconButton(
@@ -308,7 +308,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         foregroundColor: Colors.white,
-                        disabledBackgroundColor: AppColors.primary.withOpacity(0.6),
+                        disabledBackgroundColor: AppColors.primary.withOpacity(0.6), // ignore: deprecated_member_use
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),

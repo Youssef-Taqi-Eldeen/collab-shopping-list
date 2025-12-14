@@ -123,4 +123,9 @@ class FirebaseService {
       "collaboratorsIds": FieldValue.arrayRemove([collaboratorId]),
     });
   }
+
+  // DELETE CART
+  Future<void> deleteCart(String cartId) async {
+    await _firestore.collection('carts').doc(cartId).delete();
+  }
 }

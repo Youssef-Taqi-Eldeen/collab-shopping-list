@@ -93,10 +93,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                     child: Container(
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
+                        color: Colors.white.withOpacity(0.1), // ignore: deprecated_member_use
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withOpacity(0.2), // ignore: deprecated_member_use
                           width: 2,
                         ),
                       ),
@@ -135,7 +135,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
-                          color: Colors.white.withOpacity(0.8),
+                          color: Colors.white.withOpacity(0.8), // ignore: deprecated_member_use
                           letterSpacing: 1.2,
                         ),
                       ),

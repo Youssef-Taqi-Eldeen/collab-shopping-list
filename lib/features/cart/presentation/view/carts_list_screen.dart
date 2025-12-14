@@ -7,6 +7,7 @@ import '../../cubit/cart_cubit.dart';
 import '../../cubit/cart_state.dart';
 import '../../model/cart_model.dart';
 import 'cart_screen.dart';
+import 'address_screen.dart';
 
 
 class CartsListScreen extends StatefulWidget {
@@ -55,12 +56,10 @@ class _CartsListScreenState extends State<CartsListScreen> {
               );
             }
 
-            return ListView.separated(
+            return ListView.builder(
               padding: EdgeInsets.all(getResponsiveSize(context, size: 16)),
               physics: const BouncingScrollPhysics(),
               itemCount: carts.length,
-              separatorBuilder: (_, __) =>
-                  SizedBox(height: getResponsiveSize(context, size: 12)),
               itemBuilder: (context, index) {
                 final cart = carts[index];
                 return _cartTile(context, cart);
@@ -75,76 +74,138 @@ class _CartsListScreenState extends State<CartsListScreen> {
   }
 
   Widget _cartTile(BuildContext context, CartModel cart) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => CartDetailScreen(cartId: cart.id),
+    final total = cart.products.fold(
+      0.0,
+      (sum, item) => sum + (item.price * item.qty),
+    );
+
+    return Container(
+      margin: EdgeInsets.only(bottom: getResponsiveSize(context, size: 8)),
+      padding: EdgeInsets.all(getResponsiveSize(context, size: 14)),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(
+          getResponsiveRadius(context, radius: 14),
+        ),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 6,
+            offset: Offset(0, 2),
           ),
-        );
-      },
-      borderRadius: BorderRadius.circular(getResponsiveRadius(context, radius: 14)),
-      child: Container(
-        padding: EdgeInsets.all(getResponsiveSize(context, size: 14)),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(
-            getResponsiveRadius(context, radius: 14),
+        ],
+      ),
+      child: Column(
+        children: [
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => CartDetailScreen(cartId: cart.id),
+                ),
+              );
+            },
+            borderRadius:
+                BorderRadius.circular(getResponsiveRadius(context, radius: 14)),
+            child: Row(
+              children: [
+                // Icon box
+                Container(
+                  height: getResponsiveSize(context, size: 46),
+                  width: getResponsiveSize(context, size: 46),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(.15), // ignore: deprecated_member_use
+                    borderRadius: BorderRadius.circular(
+                        getResponsiveRadius(context, radius: 12)),
+                  ),
+                  child: Icon(
+                    Icons.shopping_bag,
+                    color: AppColors.primary,
+                    size: getResponsiveSize(context, size: 26),
+                  ),
+                ),
+
+                SizedBox(width: getResponsiveSize(context, size: 12)),
+
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        cart.name,
+                        style: Styles.bold20(context),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: getResponsiveSize(context, size: 4)),
+                      Text(
+                        "${cart.products.length} products • ${cart.collaborators.length} collaborators",
+                        style: Styles.body12Grey(context),
+                      ),
+                    ],
+                  ),
+                ),
+
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: getResponsiveSize(context, size: 16),
+                  color: AppColors.textLight,
+                ),
+              ],
+            ),
           ),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 6,
-              offset: Offset(0, 2),
+
+          if (cart.products.isNotEmpty) ...[
+            SizedBox(height: getResponsiveSize(context, size: 12)),
+            const Divider(height: 1),
+            SizedBox(height: getResponsiveSize(context, size: 12)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Total: \$${total.toStringAsFixed(2)}',
+                  style: Styles.body16(context).copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.primary,
+                  ),
+                ),
+                SizedBox(
+                  height: getResponsiveSize(context, size: 40),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => AddressScreen(
+                            cartId: cart.id,
+                            totalAmount: total,
+                          ),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          getResponsiveRadius(context, radius: 20),
+                        ),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: getResponsiveSize(context, size: 20),
+                      ),
+                    ),
+                    child: Text(
+                      'Checkout',
+                      style: Styles.button16(context).copyWith(
+                        fontSize: getResponsiveText(context, fontSize: 14),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
-        ),
-        child: Row(
-          children: [
-            // Icon box
-            Container(
-              height: getResponsiveSize(context, size: 46),
-              width: getResponsiveSize(context, size: 46),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(.15),
-                borderRadius: BorderRadius.circular(
-                    getResponsiveRadius(context, radius: 12)),
-              ),
-              child: Icon(
-                Icons.shopping_bag,
-                color: AppColors.primary,
-                size: getResponsiveSize(context, size: 26),
-              ),
-            ),
-
-            SizedBox(width: getResponsiveSize(context, size: 12)),
-
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    cart.name,
-                    style: Styles.bold20(context),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(height: getResponsiveSize(context, size: 4)),
-                  Text(
-                    "${cart.products.length} products • ${cart.collaborators.length} collaborators",
-                    style: Styles.body12Grey(context),
-                  ),
-                ],
-              ),
-            ),
-
-            Icon(
-              Icons.arrow_forward_ios,
-              size: getResponsiveSize(context, size: 16),
-              color: AppColors.textLight,
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }

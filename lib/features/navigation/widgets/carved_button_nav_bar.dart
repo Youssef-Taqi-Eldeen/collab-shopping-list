@@ -31,7 +31,7 @@ class CurvedBottomNav extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withOpacity(0.08), // ignore: deprecated_member_use
             blurRadius: 15,
             offset: const Offset(0, 4),
           ),
@@ -66,7 +66,7 @@ class CurvedBottomNav extends StatelessWidget {
 
         padding: EdgeInsets.all(isActive ? 6 : 4),
         decoration: BoxDecoration(
-          color: isActive ? AppColors.primary.withOpacity(0.15) : Colors.transparent,
+          color: isActive ? AppColors.primary.withOpacity(0.15) : Colors.transparent, // ignore: deprecated_member_use
           borderRadius: BorderRadius.circular(50),
         ),
 

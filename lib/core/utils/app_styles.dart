@@ -58,6 +58,14 @@ abstract class Styles {
     );
   }
 
+  static TextStyle body12(BuildContext context) {
+    return TextStyle(
+      color: AppColors.textDark,
+      fontSize: getResponsiveText(context, fontSize: 12),
+      fontWeight: FontWeight.w400,
+    );
+  }
+
   //Button Text
   static TextStyle button16(BuildContext context) {
     return TextStyle(
