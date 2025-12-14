@@ -150,14 +150,19 @@ class CartDetailScreen extends StatelessWidget {
     return Container(
       height: getResponsiveSize(context, size: 100),
       margin:
-      EdgeInsets.symmetric(vertical: getResponsiveSize(context, size: 6)),
-      child: Card(
-        elevation: 5,
-        shadowColor: Colors.black12,
-        shape: RoundedRectangleBorder(
-          borderRadius:
-          BorderRadius.circular(getResponsiveRadius(context, radius: 12)),
-        ),
+          EdgeInsets.symmetric(vertical: getResponsiveSize(context, size: 6)),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius:
+            BorderRadius.circular(getResponsiveRadius(context, radius: 12)),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 6,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
         child: Padding(
           padding: EdgeInsets.all(getResponsiveSize(context, size: 10)),
           child: Row(
@@ -236,7 +241,7 @@ class CartDetailScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
+
     );
   }
 
