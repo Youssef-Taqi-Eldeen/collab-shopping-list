@@ -13,7 +13,7 @@ class FirebaseService {
   Stream<List<CartModel>> streamCarts() {
     return _firestore
         .collection('carts')
-        .where('ownerId', isEqualTo: userId)
+        .where('collaboratorsIds', arrayContains: userId)
         .snapshots()
         .map((snap) {
       return snap.docs.map((doc) {
@@ -41,7 +41,7 @@ class FirebaseService {
       "ownerId": userId,
       "products": [],
       "collaborators": [],
-      "collaboratorsIds": [],
+      "collaboratorsIds": [userId],
       "createdAt": FieldValue.serverTimestamp(),
       "updatedAt": FieldValue.serverTimestamp(),
     });
@@ -122,5 +122,10 @@ class FirebaseService {
       "collaborators": updated.map((e) => e.toMap()).toList(),
       "collaboratorsIds": FieldValue.arrayRemove([collaboratorId]),
     });
+  }
+
+  // DELETE CART
+  Future<void> deleteCart(String cartId) async {
+    await _firestore.collection('carts').doc(cartId).delete();
   }
 }

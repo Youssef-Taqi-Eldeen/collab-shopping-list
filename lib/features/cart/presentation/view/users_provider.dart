@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class UsersProvider with ChangeNotifier {
-  List<String> _users = [];
+  final List<String> _users = [];
 
   List<String> get users => _users;
 
