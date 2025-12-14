@@ -75,7 +75,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         child: Icon(
                           Icons.star,
                           size: 24,
-                          color: active ? AppColors.primary : Colors.grey.withOpacity(0.3),
+                          color: active ? AppColors.primary : Colors.grey.withOpacity(0.3), // ignore: deprecated_member_use
                         ),
                       );
                     }),

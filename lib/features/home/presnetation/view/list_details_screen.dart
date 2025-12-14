@@ -124,7 +124,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: Colors.black.withOpacity(0.05), // ignore: deprecated_member_use
                               blurRadius: 8,
                               offset: const Offset(0, 4),
                             ),
@@ -141,7 +141,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                                   Container(
                                     width: double.infinity,
                                     decoration: BoxDecoration(
-                                      color: AppColors.primary.withOpacity(0.05),
+                                      color: AppColors.primary.withOpacity(0.05), // ignore: deprecated_member_use
                                       borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
                                     ),
                                     child: item.imageUrl != null && item.imageUrl!.isNotEmpty
@@ -155,7 +155,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                                                   child: Icon(
                                                     Icons.shopping_bag_outlined,
                                                     size: 40,
-                                                    color: AppColors.primary.withOpacity(0.5),
+                                                    color: AppColors.primary.withOpacity(0.5), // ignore: deprecated_member_use
                                                   ),
                                                 );
                                               },
@@ -165,7 +165,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                                             child: Icon(
                                               Icons.shopping_bag_outlined,
                                               size: 40,
-                                              color: AppColors.primary.withOpacity(0.5),
+                                              color: AppColors.primary.withOpacity(0.5), // ignore: deprecated_member_use
                                             ),
                                           ),
                                   ),
@@ -249,7 +249,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
               borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withOpacity(0.05), // ignore: deprecated_member_use
                   blurRadius: 10,
                   offset: const Offset(0, -4),
                 ),

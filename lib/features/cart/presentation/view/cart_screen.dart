@@ -8,6 +8,7 @@ import '../../cubit/cart_cubit.dart';
 import '../../model/cart_model.dart';
 import 'add_user_screen.dart';
 import 'users_screen.dart';
+import 'address_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -269,26 +270,48 @@ class CartDetailScreen extends StatelessWidget {
   }
 
   Widget _checkoutButton(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: getResponsiveSize(context, size: 16),
-        vertical: getResponsiveSize(context, size: 12),
-      ),
-      child: SizedBox(
-        width: double.infinity,
-        height: getResponsiveSize(context, size: 60),
-        child: ElevatedButton(
-          onPressed: () {},
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            shape: RoundedRectangleBorder(
-              borderRadius:
-              BorderRadius.circular(getResponsiveRadius(context, radius: 40)),
+    return StreamBuilder<CartModel?>(
+      stream: context.read<CartsCubit>().firebase.streamCart(cartId),
+      builder: (context, snapshot) {
+        final cart = snapshot.data;
+        final total = cart?.products.fold(
+              0.0,
+              (sum, item) => sum + (item.price * item.qty),
+            ) ??
+            0.0;
+
+        return Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: getResponsiveSize(context, size: 16),
+            vertical: getResponsiveSize(context, size: 12),
+          ),
+          child: SizedBox(
+            width: double.infinity,
+            height: getResponsiveSize(context, size: 60),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => AddressScreen(
+                      cartId: cartId,
+                      totalAmount: total,
+                    ),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                      getResponsiveRadius(context, radius: 40)),
+                ),
+              ),
+              child: Text("Checkout", style: Styles.button16(context)),
             ),
           ),
-          child: Text("Checkout", style: Styles.button16(context)),
-        ),
-      ),
+        );
+      },
     );
   }
 }

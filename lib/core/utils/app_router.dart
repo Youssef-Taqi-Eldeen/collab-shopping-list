@@ -55,7 +55,7 @@ abstract class AppRouter {
         ),
 
         GoRoute(
-          name: kHomeView,
+          name: 'home',
           path: kHomeView,
           builder: (context, state) => const MainLayout(),
         ),

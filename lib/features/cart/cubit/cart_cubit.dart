@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/services/firebase_service.dart';
 import '../model/cart_model.dart';
@@ -7,17 +9,41 @@ import 'cart_state.dart';
 
 class CartsCubit extends Cubit<CartsState> {
   final FirebaseService firebase;
+  StreamSubscription? _cartsSubscription;
+  StreamSubscription? _authSubscription;
 
   CartsCubit(this.firebase) : super(CartsInitial()) {
-    _listen();
+    // Listen to authentication changes
+    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((user) {
+      if (user != null) {
+        // User logged in, start listening to their carts
+        _listen();
+      } else {
+        // User logged out, clear carts
+        _cartsSubscription?.cancel();
+        emit(CartsInitial());
+      }
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _cartsSubscription?.cancel();
+    _authSubscription?.cancel();
+    return super.close();
   }
 
   // 🔵 Listen to all user carts in real-time
   void _listen() {
+    // Cancel any existing subscription
+    _cartsSubscription?.cancel();
+    
     emit(CartsLoading());
 
-    firebase.streamCarts().listen((carts) {
+    _cartsSubscription = firebase.streamCarts().listen((carts) {
       emit(CartsLoaded(carts));
+    }, onError: (error) {
+      emit(CartsError(error.toString()));
     });
   }
 
@@ -33,19 +59,6 @@ class CartsCubit extends Cubit<CartsState> {
   }
 
   // 🔵 Listen to ONE cart live
-  /*
-  Stream<CartModel?> streamCart(String cartId) {
-    return FirebaseFirestore.instance
-        .collection("carts")
-        .doc(cartId)
-        .snapshots()
-        .map((doc) {
-      if (!doc.exists) return null;
-      return CartModel.fromMap({...doc.data()!, "id": doc.id});
-    });
-  }*/
-  // carts_cubit.dart
-
   Stream<CartModel?> streamCart(String cartId) {
     return firebase.streamCart(cartId);
   }
@@ -109,5 +122,10 @@ class CartsCubit extends Cubit<CartsState> {
       cartId: cartId,
       collaboratorId: collaboratorId,
     );
+  }
+
+  // 🔵 Delete Cart
+  Future<void> deleteCart(String cartId) async {
+    await firebase.deleteCart(cartId);
   }
 }

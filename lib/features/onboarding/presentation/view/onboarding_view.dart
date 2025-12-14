@@ -70,10 +70,10 @@ class _OnboardingViewState extends State<OnboardingView> {
                           Container(
                             padding: const EdgeInsets.all(30),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.1),
+                              color: Colors.white.withOpacity(0.1), // ignore: deprecated_member_use
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: Colors.white.withOpacity(0.2),
+                                color: Colors.white.withOpacity(0.2), // ignore: deprecated_member_use
                                 width: 2,
                               ),
                             ),
@@ -103,7 +103,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                           Text(
                             _contents[index].description,
                             style: Styles.body16(context).copyWith(
-                              color: Colors.white.withOpacity(0.8),
+                              color: Colors.white.withOpacity(0.8), // ignore: deprecated_member_use
                               height: 1.5,
                             ),
                             textAlign: TextAlign.center,
@@ -183,7 +183,7 @@ class _OnboardingViewState extends State<OnboardingView> {
       height: 6,
       width: _currentPage == index ? 24 : 6,
       decoration: BoxDecoration(
-        color: _currentPage == index ? Colors.white : Colors.white.withOpacity(0.3),
+        color: _currentPage == index ? Colors.white : Colors.white.withOpacity(0.3), // ignore: deprecated_member_use
         borderRadius: BorderRadius.circular(3),
       ),
     );
