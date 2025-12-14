@@ -73,6 +73,44 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  Future<void> sendPasswordResetEmail(String email) async {
+    _setLoading(true);
+    _error = null;
+
+    try {
+      // Note: effective user-not-found error requires disabling "Email Enumeration Protection" in Firebase Console
+      await _auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      _error = _getErrorMessage(e.code);
+      rethrow;
+    } catch (_) {
+      _error = 'Unexpected error while sending reset email.';
+      rethrow;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> confirmPasswordReset({
+    required String code,
+    required String newPassword,
+  }) async {
+    _setLoading(true);
+    _error = null;
+
+    try {
+      await _auth.confirmPasswordReset(code: code, newPassword: newPassword);
+    } on FirebaseAuthException catch (e) {
+      _error = _getErrorMessage(e.code);
+      rethrow;
+    } catch (_) {
+      _error = 'Unexpected error while resetting password.';
+      rethrow;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
   Future<void> signOut() async {
     await _auth.signOut();
     notifyListeners();

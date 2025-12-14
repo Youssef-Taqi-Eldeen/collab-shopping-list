@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart' hide AuthProvider;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'register_screen.dart';
+import 'forgot_password_view.dart';
 
 import '../../../../core/utils/app_colors.dart';
 
@@ -348,9 +349,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextButton(
                     onPressed: _isLoading 
                         ? null 
-                        : () {
-                            // Forgot password to be added later
-                             _showSnackBar('Forgot Password not implemented yet');
+                          : () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => const ForgotPasswordScreen(),
+                                ),
+                              );
                           },
                     child: Text(
                       'Forgot Password?',
