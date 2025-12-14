@@ -259,7 +259,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       filled: true,
                       fillColor: AppColors.white,
                       prefixIcon: Icon(
-                        Icons.lock_check_outlined,
+                        Icons.lock_outline_rounded,
                         color: Colors.grey[600],
                       ),
                       suffixIcon: IconButton(

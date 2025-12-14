@@ -72,11 +72,11 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       if (!mounted) return;
-
+/*
       // Navigate to MainLayout
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const MainLayout()),
-      );
+      );*/
     } catch (e) {
       // Defensive check: If user is actually logged in despite an error (race condition), show success
       if (authProvider.currentUser != null) {
@@ -106,9 +106,9 @@ class _LoginScreenState extends State<LoginScreen> {
           );
           
           if (!mounted) return;
-          Navigator.of(context).pushReplacement(
+         /* Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (_) => const MainLayout()),
-          );
+          );*/
           return;
       }
 

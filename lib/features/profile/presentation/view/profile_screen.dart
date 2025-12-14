@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/provider/auth_app.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_styles.dart';
+
+import '../../../auth/presentation/view/forgot_password_view.dart';
+import '../../data/cubit/profile_cubit.dart';
+import 'about_screen.dart';
+import 'account_setting_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -23,6 +29,7 @@ class ProfileScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.logout, color: AppColors.textDark),
             onPressed: () {
+              // go_router redirect will handle navigation
               context.read<AuthProvider>().signOut();
             },
           ),
@@ -48,7 +55,6 @@ class ProfileScreen extends StatelessWidget {
             ),
             child: Row(
               children: [
-                // Avatar
                 CircleAvatar(
                   radius: 40,
                   backgroundColor: AppColors.primary,
@@ -64,7 +70,6 @@ class ProfileScreen extends StatelessWidget {
 
                 const SizedBox(width: 18),
 
-                // User details
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,9 +81,8 @@ class ProfileScreen extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         currentUser?.email ?? "No email",
-                        style: Styles.body14(context).copyWith(
-                          color: Colors.grey[600],
-                        ),
+                        style: Styles.body14(context)
+                            .copyWith(color: Colors.grey[600]),
                       ),
                       const SizedBox(height: 8),
                       Text(
@@ -94,7 +98,7 @@ class ProfileScreen extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-          // ---------------- FUTURE: SETTINGS / ACCOUNT OPTIONS ----------------
+          // ---------------- SETTINGS / ACCOUNT OPTIONS ----------------
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
@@ -103,22 +107,40 @@ class ProfileScreen extends StatelessWidget {
                   icon: Icons.lock_outline,
                   title: "Change Password",
                   onTap: () {
-                    // TODO: Add password reset page
-                    _showSoon(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ForgotPasswordScreen(),
+                      ),
+                    );
                   },
                 ),
                 _menuTile(
                   icon: Icons.settings_outlined,
                   title: "Account Settings",
                   onTap: () {
-                    _showSoon(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => BlocProvider.value(
+                          value: context.read<ProfileBloc>(),
+                          child: const AccountSettingsScreen(),
+                        ),
+                      ),
+                    );
                   },
                 ),
+
                 _menuTile(
                   icon: Icons.info_outline,
                   title: "App Information",
                   onTap: () {
-                    _showSoon(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const AboutAppScreen(),
+                      ),
+                    );
                   },
                 ),
               ],
@@ -154,15 +176,6 @@ class ProfileScreen extends StatelessWidget {
         title: Text(title, style: const TextStyle(fontSize: 16)),
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
         onTap: onTap,
-      ),
-    );
-  }
-
-  void _showSoon(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Coming soon!"),
-        duration: Duration(seconds: 1),
       ),
     );
   }

@@ -28,14 +28,14 @@ class CustomTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
         ),
         hint: Text(hintText, style: TextStyle(
-          color: AppColors_old.hintGreyColor,
+          color: AppColors.textLight,
           fontSize: 16,
         ),),
         prefixIcon: Icon(prefixIcon),
-        prefixIconColor: AppColors_old.blackColor,
+        prefixIconColor: AppColors.textDark,
         suffixIcon: IconButton(
             onPressed: onPressedSuffixIcon,
-            icon: Icon(suffixIcon, color: AppColors_old.blackColor,))
+            icon: Icon(suffixIcon, color: AppColors.textDark,))
       ),
     );
   }
