@@ -10,17 +10,6 @@ import 'add_user_screen.dart';
 import 'users_screen.dart';
 import 'address_screen.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../core/utils/app_colors.dart';
-import '../../../../core/utils/app_styles.dart';
-import '../../../../core/utils/size_config.dart';
-import '../../cubit/cart_cubit.dart';
-import '../../model/cart_model.dart';
-import 'add_user_screen.dart';
-import 'users_screen.dart';
-
 class CartDetailScreen extends StatelessWidget {
   final String cartId;
 

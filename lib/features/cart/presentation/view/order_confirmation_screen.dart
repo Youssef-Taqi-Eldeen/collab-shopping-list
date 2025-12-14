@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_styles.dart';
-import 'package:go_router/go_router.dart';
-import '../../../../core/utils/app_router.dart';
+
 import '../../../../core/utils/size_config.dart';
-import '../../../navigation/mainLayout.dart';
+
 
 class OrderConfirmationScreen extends StatelessWidget {
   final String name;
@@ -32,7 +31,7 @@ class OrderConfirmationScreen extends StatelessWidget {
             children: [
               // Success Animation
               Container(
-                height: getResponsiveSize(context, size: 120),
+                height: getResponsiveSize(context, size: 110),
                 width: getResponsiveSize(context, size: 120),
                 decoration: BoxDecoration(
                   color: Colors.green.withOpacity(0.1), // ignore: deprecated_member_use
@@ -93,9 +92,9 @@ class OrderConfirmationScreen extends StatelessWidget {
                     _detailRow(context, Icons.phone, 'Phone', phone),
                     SizedBox(height: getResponsiveSize(context, size: 12)),
                     _detailRow(context, Icons.location_on, 'Address', address),
-                    SizedBox(height: getResponsiveSize(context, size: 16)),
-                    const Divider(),
                     SizedBox(height: getResponsiveSize(context, size: 12)),
+                    const Divider(),
+                    SizedBox(height: getResponsiveSize(context, size: 8)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
